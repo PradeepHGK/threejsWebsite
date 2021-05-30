@@ -1,0 +1,11 @@
+Model Information:
+* title:	Disney Infinity Vanellope Von Schweetz
+* source:	https://sketchfab.com/3d-models/disney-infinity-vanellope-von-schweetz-7d25358699074ee5b99d2ee38f3a401d
+* author:	Neut2000 (https://sketchfab.com/Neut2000)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Disney Infinity Vanellope Von Schweetz" (https://sketchfab.com/3d-models/disney-infinity-vanellope-von-schweetz-7d25358699074ee5b99d2ee38f3a401d) by Neut2000 (https://sketchfab.com/Neut2000) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
