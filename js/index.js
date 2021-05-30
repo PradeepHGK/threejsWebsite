@@ -184,7 +184,6 @@ function animate() {
   cone.rotation.y += 0.001;
   cone.rotation.z += 0.001;
 
-  
   // controls.autoRotate = true;
   // controls.enableDamping = true;
   controls.update();
@@ -193,3 +192,13 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+function disableRightClick() {
+  document.onclick = (event) => {
+    if (event.button == 2) {
+      return false;
+    }
+  };
+}
+
+document.body.onload = disableRightClick();
