@@ -20,7 +20,10 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.lookAt( scene.position );
+
+camera.position.set(-50, 60, -100);
+camera.rotation.set(100, 0, 0);
+// camera.lookAt( scene.position );
 //Add a renderer to show the scene items
 const renderer = new THREE.WebGL1Renderer({
   antialias: true,
@@ -47,9 +50,6 @@ const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cone = new THREE.Mesh(geomentry, coneMaterial);
 
 // scene.add(cone);
-camera.position.z = -1;
-camera.position.y = 50;
-camera.position.x = -10;
 
 const light = new THREE.AmbientLight(0xfffffff);
 const pointLight = new THREE.PointLight(0xffffff);
@@ -183,6 +183,8 @@ function animate() {
   cone.rotation.x += 0.001;
   cone.rotation.y += 0.001;
   cone.rotation.z += 0.001;
+
+  
   // controls.autoRotate = true;
   // controls.enableDamping = true;
   controls.update();
