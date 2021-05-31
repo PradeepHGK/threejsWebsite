@@ -28,13 +28,31 @@ camera.rotation.set(100, 0, 0);
 const renderer = new THREE.WebGL1Renderer({
   antialias: true,
 });
+// renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+// scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture;
+
 //Add a Primitive Geomentry
 
 //Add Floor
+const mesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(2000, 2000),
+  new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
+);
+
+mesh.rotation.x = -Math.PI / 2;
+scene.add(mesh);
+
+
+const grid = new THREE.GridHelper( 2000, 40, 0x000000, 0x000000 );
+grid.material.opacity = 0.2;
+grid.material.transparent = true;
+scene.add( grid );
+
 const geometry = new THREE.PlaneGeometry(100, 100);
 const material = new THREE.MeshBasicMaterial({
   color: 0xffff00,
@@ -57,8 +75,19 @@ const pointLight = new THREE.PointLight(0xffffff);
 // scene.add(light);
 
 var ambientLight = new THREE.AmbientLight(0x999999);
-scene.add(ambientLight);
+// scene.add(ambientLight);
 
+
+const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+hemiLight.position.set( 0, 20, 0 );
+scene.add( hemiLight );
+
+const dirLight = new THREE.DirectionalLight( 0xffffff );
+dirLight.position.set( 0, 20, 10 );
+scene.add( dirLight );
+
+
+scene.background = new THREE.Color(0xbfe3dd);
 //Particle
 var particle = new THREE.Object3D();
 
@@ -69,6 +98,8 @@ var particle = new THREE.Object3D();
 //Orbit Controls
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.5, 0);
+controls.update();
 
 // Instantiate a loader
 const loader = new THREE.GLTFLoader();
