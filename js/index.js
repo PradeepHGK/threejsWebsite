@@ -203,7 +203,6 @@ loaderCar.load(
 
 //#endregion
 
-
 //#region Resize Window
 //Make the window responsive and update on the resizing
 window.addEventListener("resize", onWindowResize, false);
@@ -234,6 +233,7 @@ function animate() {
 animate();
 //#endregion
 
+//#region  Prevent Code to copy
 //Disable Right click to prevent to get source code
 function disableRightClick() {
   document.onclick = (event) => {
@@ -244,3 +244,4 @@ function disableRightClick() {
 }
 
 document.body.onload = disableRightClick();
+//#endregion
