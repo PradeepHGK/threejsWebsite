@@ -8,11 +8,11 @@
 //HTML canvas to Render
 var canvas = document.getElementById("webgl");
 
-
 //#region  Scene
 //Creating New Scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xbfe3dd);
+// scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0xF5DE9A);
 //#endregion
 
 //#region  Camera
@@ -49,11 +49,11 @@ const pmremGenerator = new THREE.PMREMGenerator(renderer);
 //Floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(2000, 2000),
-  new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
+  new THREE.MeshPhongMaterial({ color: 0xF5DE9A, depthWrite: false })
 );
 
 floor.rotation.x = -Math.PI / 2;
-scene.add(floor);
+// scene.add(floor);
 
 //White Plane
 const geometry = new THREE.PlaneGeometry(100, 100);
@@ -69,7 +69,7 @@ const box = new THREE.Mesh(geomentry, coneMaterial);
 const grid = new THREE.GridHelper(2000, 40, 0x000000, 0x000000);
 grid.material.opacity = 0.2;
 grid.material.transparent = true;
-scene.add(grid);
+// scene.add(grid);
 
 //Time from THREE
 var clock = new THREE.Clock();
@@ -249,7 +249,6 @@ city.load(
 );
 
 //#endregion
-
 
 //#region  Caching
 THREE.Cache.enabled = true;
