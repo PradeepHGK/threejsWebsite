@@ -2,18 +2,22 @@
 // import * as THREE from './node_modules/three/src/Three.js';
 // const THREE = require("three");
 
-// const { Vector3 } = require("three");
-
 // import * as THREE from "https://unpkg.com/three@0.120.1/build/three.module.js";
 // import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.101.1/examples/js/controls/OrbitControls.js';
 
-var fov = 75;
+//HTML canvas to Render
+var canvas = document.getElementById("webgl");
 
+//#region  Scene
 //Creating New Scene
 const scene = new THREE.Scene();
+// scene.background = new THREE.Color(0xbfe3dd);
 scene.background = new THREE.Color(0x1a75ff);
+//#endregion
 
+//#region  Camera
 //Adding Perspective Camera
+var fov = 75; //Camera FOV
 const camera = new THREE.PerspectiveCamera(
   fov,
   window.innerWidth / window.innerHeight,
@@ -21,10 +25,13 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 
+// camera.lookAt( scene.position );
 camera.position.set(-50, 60, -100);
 camera.rotation.set(100, 0, 0);
-// camera.lookAt( scene.position );
-//Add a renderer to show the scene items
+//#endregion
+
+//#region  Renderer
+//WEBGL Renderer
 const renderer = new THREE.WebGL1Renderer({
   antialias: true,
 });
@@ -35,40 +42,42 @@ document.body.appendChild(renderer.domElement);
 
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 // scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture;
+//#endregion
 
+//#region Geomentry
 //Add a Primitive Geomentry
-
-//Add Floor
-const mesh = new THREE.Mesh(
+//Floor
+const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(2000, 2000),
   new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
-);
+  );
+  
+floor.rotation.x = -Math.PI / 2;
+scene.add(floor);
 
-mesh.rotation.x = -Math.PI / 2;
-scene.add(mesh);
-
-
-const grid = new THREE.GridHelper( 2000, 40, 0x000000, 0x000000 );
-grid.material.opacity = 0.2;
-grid.material.transparent = true;
-scene.add( grid );
-
+//White Plane 
 const geometry = new THREE.PlaneGeometry(100, 100);
 const material = new THREE.MeshBasicMaterial({
   color: 0xffff00,
   side: THREE.DoubleSide,
 });
-const plane = new THREE.Mesh(geometry, material);
-
-plane.rotation.x = 0;
-// scene.add( plane );
-
 const geomentry = new THREE.BoxGeometry(0.3, 0.2, 0.2);
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cone = new THREE.Mesh(geomentry, coneMaterial);
+const box = new THREE.Mesh(geomentry, coneMaterial);
 
-// scene.add(cone);
+//GRID for the floor 
+const grid = new THREE.GridHelper(2000, 40, 0x000000, 0x000000);
+grid.material.opacity = 0.2;
+grid.material.transparent = true;
+scene.add(grid);
 
+//Time from THREE
+var clock = new THREE.Clock();
+var delta;
+//#endregion
+
+//#region  Lights
+//Lights 
 const light = new THREE.AmbientLight(0xfffffff);
 const pointLight = new THREE.PointLight(0xffffff);
 // scene.add(pointLight);
@@ -77,30 +86,63 @@ const pointLight = new THREE.PointLight(0xffffff);
 var ambientLight = new THREE.AmbientLight(0x999999);
 // scene.add(ambientLight);
 
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
+hemiLight.position.set(0, 20, 0);
+scene.add(hemiLight);
 
-const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
-hemiLight.position.set( 0, 20, 0 );
-scene.add( hemiLight );
+const dirLight = new THREE.DirectionalLight(0xffffff);
+dirLight.position.set(0, 20, 10);
+scene.add(dirLight);
+//#endregion
 
-const dirLight = new THREE.DirectionalLight( 0xffffff );
-dirLight.position.set( 0, 20, 10 );
-scene.add( dirLight );
-
-
-scene.background = new THREE.Color(0xbfe3dd);
-//Particle
-var particle = new THREE.Object3D();
-
-// Add Grid
-// const grid = new THREE.GridHelper(200, 100);
-// scene.add(grid);
-
+//#region OrbitControls
 //Orbit Controls
-
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0.5, 0);
 controls.update();
+controls.touches = {
+  ONE: THREE.TOUCH.ROTATE,
+  TWO: THREE.TOUCH.DOLLY_PAN,
+};
 
+controls.keys = {
+  LEFT: "ArrowLeft", //left arrow
+  UP: "ArrowUp", // up arrow
+  RIGHT: "ArrowRight", // right arrow
+  BOTTOM: "ArrowDown", // down arrow
+};
+
+document.addEventListener("keydown", setupKeyControls, false);
+function setupKeyControls() {
+  document.onkeydown = function (e) {
+    switch (e.keyCode) {
+      case 37: //Left Arrow
+        camera.position.x = camera.position.x - delta;
+        camera.updateProjectionMatrix();
+        // cube.rotation.x += 0.1;
+        break;
+      case 38: //Up  //right
+        camera.position.z = camera.position.z - delta;
+        camera.updateProjectionMatrix();
+        // cube.rotation.z -= 0.1;
+        break;
+      case 39: //right
+        camera.position.x = camera.position.x + delta;
+        camera.updateProjectionMatrix();
+        // cube.rotation.x -= 0.1;
+        break;
+      case 40: //down
+        camera.position.z = camera.position.z + delta;
+        camera.updateProjectionMatrix();
+        // cube.rotation.z += 0.1;
+        break;
+    }
+  };
+}
+//#endregion
+
+//#region  Add 3D Objects 
+//Load 3D Objects
 // Instantiate a loader
 const loader = new THREE.GLTFLoader();
 loader.load(
@@ -159,6 +201,11 @@ loaderCar.load(
   }
 );
 
+//#endregion
+
+
+//#region Resize Window
+//Make the window responsive and update on the resizing
 window.addEventListener("resize", onWindowResize, false);
 
 function onWindowResize() {
@@ -166,48 +213,9 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
+//#endregion
 
-controls.touches = {
-  ONE: THREE.TOUCH.ROTATE,
-  TWO: THREE.TOUCH.DOLLY_PAN,
-};
-
-controls.keys = {
-  LEFT: "ArrowLeft", //left arrow
-  UP: "ArrowUp", // up arrow
-  RIGHT: "ArrowRight", // right arrow
-  BOTTOM: "ArrowDown", // down arrow
-};
-
-document.addEventListener("keydown", setupKeyControls, false);
-function setupKeyControls() {
-  var delta = 30;
-  document.onkeydown = function (e) {
-    switch (e.keyCode) {
-      case 37: //Left Arrow
-        camera.position.x += camera.position.x;
-        camera.updateProjectionMatrix();
-        // cube.rotation.x += 0.1;
-        break;
-      case 38: //Up  //right
-        camera.position.z = camera.position.z - delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.z -= 0.1;
-        break;
-      case 39: //right
-        camera.position.x = camera.position.x + delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.x -= 0.1;
-        break;
-      case 40: //down
-        camera.position.z = camera.position.z + delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.z += 0.1;
-        break;
-    }
-  };
-}
-
+//#region  Update Method
 function animate() {
   requestAnimationFrame(animate);
 
@@ -217,13 +225,16 @@ function animate() {
 
   // controls.autoRotate = true;
   // controls.enableDamping = true;
-  controls.update();
   // controls.damping = true;
+  controls.update();
 
+  delta = clock.getDelta();
   renderer.render(scene, camera);
 }
 animate();
+//#endregion
 
+//Disable Right click to prevent to get source code
 function disableRightClick() {
   document.onclick = (event) => {
     if (event.button == 2) {
