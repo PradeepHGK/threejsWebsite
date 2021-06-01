@@ -17,3 +17,15 @@ canvas {
   padding-left: 15px;
   color: blueviolet;
 }
+
+
+.loadermodal{
+  display: flex;
+  width: 30%;
+  height: 30%;
+  color: coral;
+  background-color: cornsilk;
+  justify-content: center;
+  align-self: center;
+  
+}

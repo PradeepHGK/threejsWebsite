@@ -8,6 +8,9 @@
 //HTML canvas to Render
 var canvas = document.getElementById("webgl");
 
+var modalWindow  = document.getElementById("exampleModalCenter");
+// console.log("Modal: ", modalWindow);
+
 //#region  Scene
 //Creating New Scene
 const scene = new THREE.Scene();
