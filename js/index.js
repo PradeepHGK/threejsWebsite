@@ -250,6 +250,11 @@ city.load(
 
 //#endregion
 
+
+//#region  Caching
+THREE.Cache.enabled = true;
+//#endregion
+
 //#region Resize Window
 //Make the window responsive and update on the resizing
 window.addEventListener("resize", onWindowResize, false);
