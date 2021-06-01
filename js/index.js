@@ -11,8 +11,7 @@ var canvas = document.getElementById("webgl");
 //#region  Scene
 //Creating New Scene
 const scene = new THREE.Scene();
-// scene.background = new THREE.Color(0xbfe3dd);
-scene.background = new THREE.Color(0x1a75ff);
+scene.background = new THREE.Color(0xbfe3dd);
 //#endregion
 
 //#region  Camera
@@ -50,12 +49,12 @@ const pmremGenerator = new THREE.PMREMGenerator(renderer);
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(2000, 2000),
   new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
-  );
-  
+);
+
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 
-//White Plane 
+//White Plane
 const geometry = new THREE.PlaneGeometry(100, 100);
 const material = new THREE.MeshBasicMaterial({
   color: 0xffff00,
@@ -65,7 +64,7 @@ const geomentry = new THREE.BoxGeometry(0.3, 0.2, 0.2);
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const box = new THREE.Mesh(geomentry, coneMaterial);
 
-//GRID for the floor 
+//GRID for the floor
 const grid = new THREE.GridHelper(2000, 40, 0x000000, 0x000000);
 grid.material.opacity = 0.2;
 grid.material.transparent = true;
@@ -77,7 +76,7 @@ var delta;
 //#endregion
 
 //#region  Lights
-//Lights 
+//Lights
 const light = new THREE.AmbientLight(0xfffffff);
 const pointLight = new THREE.PointLight(0xffffff);
 // scene.add(pointLight);
@@ -99,6 +98,11 @@ scene.add(dirLight);
 //Orbit Controls
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0.5, 0);
+controls.enableDamping = true;
+controls.screenSpacePanning = false;
+controls.minDistance = 80;
+controls.maxDistance = 500;
+controls.maxPolarAngle = Math.PI / 2;
 controls.update();
 controls.touches = {
   ONE: THREE.TOUCH.ROTATE,
@@ -141,16 +145,16 @@ function setupKeyControls() {
 }
 //#endregion
 
-//#region  Add 3D Objects 
+//#region  Add 3D Objects
 //Load 3D Objects
 // Instantiate a loader
-const loader = new THREE.GLTFLoader();
-loader.load(
+const cafe = new THREE.GLTFLoader();
+cafe.load(
   "models/cafe/scene.gltf",
   (gltf) => {
     gltf.scene.position.set(0, 0, 0);
     gltf.scene.scale.set(30, 30, 30);
-    scene.add(gltf.scene);
+    // scene.add(gltf.scene);
 
     gltf.animations; // Array<THREE.AnimationClip>
     gltf.scene; // THREE.Group
@@ -168,6 +172,7 @@ loaderCharacter.load(
   "models/disney_infinity_vanellope_von_schweetz/scene.gltf",
   (gltf) => {
     gltf.scene.rotation.y = 180;
+    gltf.scene.position.x = 100;
     gltf.scene.scale.set(40, 40, 40);
     scene.add(gltf.scene);
 
@@ -186,9 +191,10 @@ const loaderCar = new THREE.GLTFLoader();
 loaderCar.load(
   "models/car/scene.gltf",
   (gltf) => {
-    gltf.scene.rotation.y = 380;
-    // gltf.scene.scale.set(230, 400, 500);
-    scene.add(gltf.scene);
+    gltf.scene.rotation.y = 45;
+    gltf.scene.position.x = 100;
+    gltf.scene.scale.set(230, 400, 500);
+    // scene.add(gltf.scene);
 
     gltf.animations; // Array<THREE.AnimationClip>
     gltf.scene; // THREE.Group
@@ -198,6 +204,46 @@ loaderCar.load(
   },
   function (xhr) {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  }
+);
+
+const starWarLab = new THREE.GLTFLoader();
+starWarLab.load(
+  "models/StarWars/scene.gltf",
+  (gltf) => {
+    gltf.scene.position.z = 200;
+    gltf.scene.position.x = 200;
+    gltf.scene.scale.set(20, 50, 50);
+    // scene.add(gltf.scene);
+
+    gltf.animations; // Array<THREE.AnimationClip>
+    gltf.scene; // THREE.Group
+    gltf.scenes; // Array<THREE.Group>
+    gltf.cameras; // Array<THREE.Camera>
+    gltf.asset; // Object
+  },
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  }
+);
+
+const city = new THREE.GLTFLoader();
+city.load(
+  "models/city/scene.gltf",
+  (gltf) => {
+    gltf.scene.position.z = 100;
+    gltf.scene.position.x = 100;
+    // gltf.scene.scale.set(5, 5, 5);
+    scene.add(gltf.scene);
+
+    gltf.animations; // Array<THREE.AnimationClip>
+    gltf.scene; // THREE.Group
+    gltf.scenes; // Array<THREE.Group>
+    gltf.cameras; // Array<THREE.Camera>
+    gltf.asset; // Object
+  },
+  function (xhr) {
+    console.log("City Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
   }
 );
 
@@ -218,9 +264,9 @@ function onWindowResize() {
 function animate() {
   requestAnimationFrame(animate);
 
-  cone.rotation.x += 0.001;
-  cone.rotation.y += 0.001;
-  cone.rotation.z += 0.001;
+  // cone.rotation.x += 0.001;
+  // cone.rotation.y += 0.001;
+  // cone.rotation.z += 0.001;
 
   // controls.autoRotate = true;
   // controls.enableDamping = true;
