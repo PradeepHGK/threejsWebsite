@@ -30,6 +30,9 @@ camera.position.set(-50, 60, -100);
 camera.rotation.set(100, 0, 0);
 //#endregion
 
+var axes  = new THREE.AxesHelper(30);
+scene.add(axes);
+
 //#region  Renderer
 //WEBGL Renderer
 const renderer = new THREE.WebGL1Renderer({
