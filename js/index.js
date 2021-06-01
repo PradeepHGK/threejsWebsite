@@ -21,7 +21,7 @@ const camera = new THREE.PerspectiveCamera(
   fov,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  2000
 );
 
 // camera.lookAt( scene.position );
