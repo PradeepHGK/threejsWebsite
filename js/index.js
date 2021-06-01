@@ -8,8 +8,6 @@
 //HTML canvas to Render
 var canvas = document.getElementById("webgl");
 
-var modalWindow  = document.getElementById("exampleModalCenter");
-// console.log("Modal: ", modalWindow);
 
 //#region  Scene
 //Creating New Scene
@@ -157,7 +155,7 @@ cafe.load(
   (gltf) => {
     gltf.scene.position.set(0, 0, 0);
     gltf.scene.scale.set(30, 30, 30);
-    // scene.add(gltf.scene);
+    scene.add(gltf.scene);
 
     gltf.animations; // Array<THREE.AnimationClip>
     gltf.scene; // THREE.Group
