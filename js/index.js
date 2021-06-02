@@ -7,6 +7,7 @@
 
 //HTML canvas to Render
 var canvas = document.getElementById("webgl");
+var mixer; //GLTF Animation Mixer to play 
 
 //#region  Scene
 //Creating New Scene
@@ -17,7 +18,7 @@ scene.background = new THREE.Color(0xF5DE9A);
 
 //#region  Camera
 //Adding Perspective Camera
-var fov = 75; //Camera FOV
+var fov = 50; //Camera FOV
 const camera = new THREE.PerspectiveCamera(
   fov,
   window.innerWidth / window.innerHeight,
@@ -30,7 +31,7 @@ camera.position.set(-50, 60, -100);
 camera.rotation.set(100, 0, 0);
 //#endregion
 
-var axes  = new THREE.AxesHelper(30);
+var axes = new THREE.AxesHelper(30);
 scene.add(axes);
 
 //#region  Renderer
@@ -235,8 +236,11 @@ const city = new THREE.GLTFLoader();
 city.load(
   "models/city/scene.gltf",
   (gltf) => {
-    gltf.scene.position.z = 100;
-    gltf.scene.position.x = 100;
+    // gltf.scene.position.z = 100;
+    // gltf.scene.position.x = 100;
+    // gltf.scene.position.x = 0;
+    // gltf.scene.position.y = 0;
+    // gltf.scene.position.z = 0;
     // gltf.scene.scale.set(5, 5, 5);
     scene.add(gltf.scene);
 
@@ -250,6 +254,43 @@ city.load(
     console.log("City Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
   }
 );
+
+
+var droneRobot = new THREE.GLTFLoader();
+droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
+
+  gltf.scene.position.x = 50;
+  gltf.scene.position.y = 10;
+  gltf.scene.position.z = 0;
+
+  gltf.scene.scale.set(.1, .1, .1);
+  console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
+
+  scene.add(gltf.scene);
+  mixer = new THREE.AnimationMixer(gltf.scene);
+
+  gltf.animations.forEach((clip) => {
+
+    console.log("DroneAnimationClip: ", clip);
+    // mixer.clipAction(clip).play();
+
+  });
+
+
+  // Play a specific animation
+  const clip = THREE.AnimationClip.findByName(gltf.animations, "Turbine_Controller.position");
+  const action = mixer.clipAction(clip);
+  if(action !== null){
+    action.play();
+    console.log("animationPlay")
+  }
+
+  gltf.animations; // Array<THREE.AnimationClip>
+  gltf.scene; // THREE.Group
+  gltf.scenes; // Array<THREE.Group>
+  gltf.cameras; // Array<THREE.Camera>
+  gltf.asset; // Object
+})
 
 //#endregion
 
@@ -280,8 +321,10 @@ function animate() {
   // controls.enableDamping = true;
   // controls.damping = true;
   controls.update();
-
   delta = clock.getDelta();
+
+  if (mixer) mixer.update(delta);
+
   renderer.render(scene, camera);
 }
 animate();
