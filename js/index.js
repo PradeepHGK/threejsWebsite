@@ -2,6 +2,7 @@
 // import * as THREE from './node_modules/three/src/Three.js';
 // const THREE = require("three");
 
+
 // import * as THREE from "https://unpkg.com/three@0.120.1/build/three.module.js";
 // import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.101.1/examples/js/controls/OrbitControls.js';
 
@@ -14,6 +15,13 @@ var mixer; //GLTF Animation Mixer to play
 const scene = new THREE.Scene();
 // scene.background = new THREE.Color(0xffffff);
 scene.background = new THREE.Color(0xF5DE9A);
+
+// const texture = new THREE.TextureLoader().load( "images/skybox/skybox2.jpg" );
+// texture.wrapS = THREE.RepeatWrapping;
+// texture.wrapT = THREE.RepeatWrapping;
+// texture.repeat.set( 4, 4 );
+
+// scene.background = texture;
 //#endregion
 
 //#region  Camera
@@ -25,10 +33,11 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   2000
 );
-
+console.log("CameraPosition: ", camera.position)
 // camera.lookAt( scene.position );
-camera.position.set(-50, 60, -100);
-camera.rotation.set(100, 0, 0);
+camera.position.set(0, 150, 100);
+// camera.rotation.set(100, 0, 0);
+
 //#endregion
 
 var axes = new THREE.AxesHelper(30);
@@ -83,8 +92,12 @@ var delta;
 //#region  Lights
 //Lights
 const light = new THREE.AmbientLight(0xfffffff);
-const pointLight = new THREE.PointLight(0xffffff);
-// scene.add(pointLight);
+const pointLight = new THREE.PointLight(0x089afc);
+pointLight.position.x = 50;
+pointLight.position.y = 30;
+pointLight.position.z = 0;
+pointLight.intensity = 1;
+scene.add(pointLight);
 // scene.add(light);
 
 var ambientLight = new THREE.AmbientLight(0x999999);
@@ -260,10 +273,10 @@ var droneRobot = new THREE.GLTFLoader();
 droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
 
   gltf.scene.position.x = 50;
-  gltf.scene.position.y = 10;
+  gltf.scene.position.y = 20;
   gltf.scene.position.z = 0;
 
-  gltf.scene.scale.set(.1, .1, .1);
+  gltf.scene.scale.set(.2, .2, .2);
   console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
 
   scene.add(gltf.scene);
@@ -281,7 +294,7 @@ droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
   const clip = THREE.AnimationClip.findByName(gltf.animations, "Turbine_Controller.position");
   const action = mixer.clipAction(firstClip);
   console.log("AnimationAction: ", action);
-  if(action !== null){
+  if (action !== null) {
     action.setDuration = 2;
     action.play();
     action.loop = THREE.LoopPingPong;
@@ -294,6 +307,29 @@ droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
   gltf.cameras; // Array<THREE.Camera>
   gltf.asset; // Object
 })
+
+
+//Add New Smart House
+var smartHome = new THREE.GLTFLoader();
+smartHome.load('models/House/stylized_house/scene.gltf', (smarthome) => {
+
+  smarthome.scene.position.x = 500;
+  smarthome.scene.position.y = 0;
+  smarthome.scene.position.z = -700;
+  smarthome.scene.scale.set(20, 20, 20);
+  console.log("SHScale: ", smarthome.scene.scale);
+  scene.add(smarthome.scene);
+
+  smarthome.animations; // Array<THREE.AnimationClip>
+  smarthome.scene; // THREE.Group
+  smarthome.scenes; // Array<THREE.Group>
+  smarthome.cameras; // Array<THREE.Camera>
+  smarthome.asset; // Object
+},
+  function (xhr) {
+    console.log("SmartHome Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+  }
+)
 
 //#endregion
 

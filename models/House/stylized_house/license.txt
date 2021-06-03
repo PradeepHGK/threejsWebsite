@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stylized House
+* source:	https://sketchfab.com/3d-models/stylized-house-d4c4868d008341dd89fbdd246b53d8fd
+* author:	tiiolr (https://sketchfab.com/tiiolr)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stylized House" (https://sketchfab.com/3d-models/stylized-house-d4c4868d008341dd89fbdd246b53d8fd) by tiiolr (https://sketchfab.com/tiiolr) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

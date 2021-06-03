@@ -1,6 +1,7 @@
 {
   "name": "threejswebsite",
   "version": "0.0.1",
+  "type": "module",
   "description": "gonna build experience",
   "main": "index.js",
   "scripts": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/PradeepHGK/threejsWebsite#readme",
   "dependencies": {
+    "parcel-bundler": "^1.12.5",
     "three": "^0.129.0"
   }
 }
