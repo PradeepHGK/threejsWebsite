@@ -268,7 +268,7 @@ droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
 
   scene.add(gltf.scene);
   mixer = new THREE.AnimationMixer(gltf.scene);
-
+  var firstClip = gltf.animations[0];
   gltf.animations.forEach((clip) => {
 
     console.log("DroneAnimationClip: ", clip);
@@ -279,9 +279,12 @@ droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
 
   // Play a specific animation
   const clip = THREE.AnimationClip.findByName(gltf.animations, "Turbine_Controller.position");
-  const action = mixer.clipAction(clip);
+  const action = mixer.clipAction(firstClip);
+  console.log("AnimationAction: ", action);
   if(action !== null){
+    action.setDuration = 2;
     action.play();
+    action.loop = THREE.LoopPingPong;
     console.log("animationPlay")
   }
 
