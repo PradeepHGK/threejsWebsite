@@ -1,6 +1,6 @@
-// import *  as THREE from "three";
-// import * as THREE from './node_modules/three/src/Three.js';
-// const THREE = require("three");
+import *  as THREE from "three";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 // import * as THREE from "https://unpkg.com/three@0.120.1/build/three.module.js";
@@ -34,6 +34,8 @@ const camera = new THREE.PerspectiveCamera(
   2000
 );
 console.log("CameraPosition: ", camera.position)
+camera.maxDistance = 1500;
+camera.minDistance = 10;
 // camera.lookAt( scene.position );
 camera.position.set(0, 150, 100);
 // camera.rotation.set(100, 0, 0);
@@ -48,7 +50,7 @@ scene.add(axes);
 const renderer = new THREE.WebGL1Renderer({
   antialias: true,
 });
-// renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -114,7 +116,7 @@ scene.add(dirLight);
 
 //#region OrbitControls
 //Orbit Controls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0.5, 0);
 controls.enableDamping = true;
 controls.screenSpacePanning = false;
@@ -166,88 +168,88 @@ function setupKeyControls() {
 //#region  Add 3D Objects
 //Load 3D Objects
 // Instantiate a loader
-const cafe = new THREE.GLTFLoader();
-cafe.load(
-  "models/cafe/scene.gltf",
-  (gltf) => {
-    gltf.scene.position.set(0, 0, 0);
-    gltf.scene.scale.set(30, 30, 30);
-    // scene.add(gltf.scene);
+// const cafe = new GLTFLoader();
+// cafe.load(
+//   "models/cafe/scene.gltf",
+//   (gltf) => {
+//     gltf.scene.position.set(0, 0, 0);
+//     gltf.scene.scale.set(30, 30, 30);
+//     // scene.add(gltf.scene);
 
-    gltf.animations; // Array<THREE.AnimationClip>
-    gltf.scene; // THREE.Group
-    gltf.scenes; // Array<THREE.Group>
-    gltf.cameras; // Array<THREE.Camera>
-    gltf.asset; // Object
-  },
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  }
-);
+//     gltf.animations; // Array<THREE.AnimationClip>
+//     gltf.scene; // THREE.Group
+//     gltf.scenes; // Array<THREE.Group>
+//     gltf.cameras; // Array<THREE.Camera>
+//     gltf.asset; // Object
+//   },
+//   function (xhr) {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   }
+// );
 
-const loaderCharacter = new THREE.GLTFLoader();
-loaderCharacter.load(
-  "models/disney_infinity_vanellope_von_schweetz/scene.gltf",
-  (gltf) => {
-    gltf.scene.rotation.y = 180;
-    gltf.scene.position.x = 100;
-    gltf.scene.scale.set(40, 40, 40);
-    scene.add(gltf.scene);
+// const loaderCharacter = new GLTFLoader();
+// loaderCharacter.load(
+//   "models/disney_infinity_vanellope_von_schweetz/scene.gltf",
+//   (gltf) => {
+//     gltf.scene.rotation.y = 180;
+//     gltf.scene.position.x = 100;
+//     gltf.scene.scale.set(40, 40, 40);
+//     scene.add(gltf.scene);
 
-    gltf.animations; // Array<THREE.AnimationClip>
-    gltf.scene; // THREE.Group
-    gltf.scenes; // Array<THREE.Group>
-    gltf.cameras; // Array<THREE.Camera>
-    gltf.asset; // Object
-  },
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  }
-);
+//     gltf.animations; // Array<THREE.AnimationClip>
+//     gltf.scene; // THREE.Group
+//     gltf.scenes; // Array<THREE.Group>
+//     gltf.cameras; // Array<THREE.Camera>
+//     gltf.asset; // Object
+//   },
+//   function (xhr) {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   }
+// );
 
-const loaderCar = new THREE.GLTFLoader();
-loaderCar.load(
-  "models/car/scene.gltf",
-  (gltf) => {
-    gltf.scene.rotation.y = 45;
-    gltf.scene.position.x = 100;
-    gltf.scene.scale.set(230, 400, 500);
-    // scene.add(gltf.scene);
+// const loaderCar = new GLTFLoader();
+// loaderCar.load(
+//   "models/car/scene.gltf",
+//   (gltf) => {
+//     gltf.scene.rotation.y = 45;
+//     gltf.scene.position.x = 100;
+//     gltf.scene.scale.set(230, 400, 500);
+//     // scene.add(gltf.scene);
 
-    gltf.animations; // Array<THREE.AnimationClip>
-    gltf.scene; // THREE.Group
-    gltf.scenes; // Array<THREE.Group>
-    gltf.cameras; // Array<THREE.Camera>
-    gltf.asset; // Object
-  },
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  }
-);
+//     gltf.animations; // Array<THREE.AnimationClip>
+//     gltf.scene; // THREE.Group
+//     gltf.scenes; // Array<THREE.Group>
+//     gltf.cameras; // Array<THREE.Camera>
+//     gltf.asset; // Object
+//   },
+//   function (xhr) {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   }
+// );
 
-const starWarLab = new THREE.GLTFLoader();
-starWarLab.load(
-  "models/StarWars/scene.gltf",
-  (gltf) => {
-    gltf.scene.position.z = 200;
-    gltf.scene.position.x = 200;
-    gltf.scene.scale.set(20, 50, 50);
-    // scene.add(gltf.scene);
+// const starWarLab = new GLTFLoader();
+// starWarLab.load(
+//   "models/StarWars/scene.gltf",
+//   (gltf) => {
+//     gltf.scene.position.z = 200;
+//     gltf.scene.position.x = 200;
+//     gltf.scene.scale.set(20, 50, 50);
+//     // scene.add(gltf.scene);
 
-    gltf.animations; // Array<THREE.AnimationClip>
-    gltf.scene; // THREE.Group
-    gltf.scenes; // Array<THREE.Group>
-    gltf.cameras; // Array<THREE.Camera>
-    gltf.asset; // Object
-  },
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  }
-);
+//     gltf.animations; // Array<THREE.AnimationClip>
+//     gltf.scene; // THREE.Group
+//     gltf.scenes; // Array<THREE.Group>
+//     gltf.cameras; // Array<THREE.Camera>
+//     gltf.asset; // Object
+//   },
+//   function (xhr) {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   }
+// );
 
-const city = new THREE.GLTFLoader();
+const city = new GLTFLoader();
 city.load(
-  "models/city/scene.gltf",
+  "https://threejsfundamentals.org/threejs/resources/models/cartoon_lowpoly_small_city_free_pack/scene.gltf",
   (gltf) => {
     // gltf.scene.position.z = 100;
     // gltf.scene.position.x = 100;
@@ -269,67 +271,58 @@ city.load(
 );
 
 
-var droneRobot = new THREE.GLTFLoader();
-droneRobot.load("models/Drone/buster_drone/scene.gltf", (gltf) => {
+// var droneRobot = new GLTFLoader();
+// console.log(droneRobot);
+// droneRobot.load("models/Drone/buster_drone/scene.gltf", function (gltf) {
 
-  gltf.scene.position.x = 50;
-  gltf.scene.position.y = 20;
-  gltf.scene.position.z = 0;
+//   console.log("callback", gltf);
 
-  gltf.scene.scale.set(.2, .2, .2);
-  console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
+//   gltf.scene.position.x = 50;
+//   gltf.scene.position.y = 20;
+//   gltf.scene.position.z = 0;
 
-  scene.add(gltf.scene);
-  mixer = new THREE.AnimationMixer(gltf.scene);
-  var firstClip = gltf.animations[0];
-  gltf.animations.forEach((clip) => {
+//   gltf.scene.scale.set(.2, .2, .2);
+//   console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
 
-    console.log("DroneAnimationClip: ", clip);
-    // mixer.clipAction(clip).play();
+//   scene.add(gltf.scene);
+//   mixer = new THREE.AnimationMixer(gltf.scene);
+//   var firstClip = gltf.animations[0];
+//   gltf.animations.forEach((clip) => {
 
-  });
+//     console.log("DroneAnimationClip: ", clip);
+//     // mixer.clipAction(clip).play();
 
+//   },
+//     function (xhr) {
+//       console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+//     }, (err) => {
+//       console.log(err);
+//     }
+//   );
 
-  // Play a specific animation
-  const clip = THREE.AnimationClip.findByName(gltf.animations, "Turbine_Controller.position");
-  const action = mixer.clipAction(firstClip);
-  console.log("AnimationAction: ", action);
-  if (action !== null) {
-    action.setDuration = 2;
-    action.play();
-    action.loop = THREE.LoopPingPong;
-    console.log("animationPlay")
-  }
-
-  gltf.animations; // Array<THREE.AnimationClip>
-  gltf.scene; // THREE.Group
-  gltf.scenes; // Array<THREE.Group>
-  gltf.cameras; // Array<THREE.Camera>
-  gltf.asset; // Object
-})
 
 
 //Add New Smart House
-var smartHome = new THREE.GLTFLoader();
-smartHome.load('models/House/stylized_house/scene.gltf', (smarthome) => {
+// var smartHome = new GLTFLoader();
+// smartHome.load('models/House/stylized_house/scene.gltf', (smarthome) => {
 
-  smarthome.scene.position.x = 500;
-  smarthome.scene.position.y = 0;
-  smarthome.scene.position.z = -700;
-  smarthome.scene.scale.set(20, 20, 20);
-  console.log("SHScale: ", smarthome.scene.scale);
-  scene.add(smarthome.scene);
+//   smarthome.scene.position.x = 500;
+//   smarthome.scene.position.y = 0;
+//   smarthome.scene.position.z = -700;
+//   smarthome.scene.scale.set(20, 20, 20);
+//   console.log("SHScale: ", smarthome.scene.scale);
+//   scene.add(smarthome.scene);
 
-  smarthome.animations; // Array<THREE.AnimationClip>
-  smarthome.scene; // THREE.Group
-  smarthome.scenes; // Array<THREE.Group>
-  smarthome.cameras; // Array<THREE.Camera>
-  smarthome.asset; // Object
-},
-  function (xhr) {
-    console.log("SmartHome Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
-  }
-)
+//   smarthome.animations; // Array<THREE.AnimationClip>
+//   smarthome.scene; // THREE.Group
+//   smarthome.scenes; // Array<THREE.Group>
+//   smarthome.cameras; // Array<THREE.Camera>
+//   smarthome.asset; // Object
+// },
+//   function (xhr) {
+//     console.log("SmartHome Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+//   }
+// )
 
 //#endregion
 

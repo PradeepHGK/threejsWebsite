@@ -5,9 +5,11 @@
   "description": "gonna build experience",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "parcel src/index.html",
+    "prod": "parcel build src/index.html --out-dir docs --public-url ./",
+    "start": "parcel build src/index.html --out-dir docs"
   },
-  "repository": {
+  "repository": { 
     "type": "git",
     "url": "git+https://github.com/PradeepHGK/threejsWebsite.git"
   },
