@@ -1,10 +1,9 @@
 import *  as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
+import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 
-
-// import * as THREE from "https://unpkg.com/three@0.120.1/build/three.module.js";
-// import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.101.1/examples/js/controls/OrbitControls.js';
 
 //HTML canvas to Render
 var canvas = document.getElementById("webgl");
@@ -27,17 +26,17 @@ scene.background = new THREE.Color(0xF5DE9A);
 //#region  Camera
 //Adding Perspective Camera
 var fov = 50; //Camera FOV
-const camera = new THREE.PerspectiveCamera(
+var camera = new THREE.PerspectiveCamera(
   fov,
   window.innerWidth / window.innerHeight,
   0.1,
   2000
 );
 console.log("CameraPosition: ", camera.position)
-camera.maxDistance = 1500;
-camera.minDistance = 10;
-// camera.lookAt( scene.position );
-camera.position.set(0, 150, 100);
+// camera.lookAt(scene.position);
+// camera.maxDistance = 1500;
+// camera.minDistance = 10;
+camera.position.set(-10, 90, 400);
 // camera.rotation.set(100, 0, 0);
 
 //#endregion
@@ -59,6 +58,16 @@ const pmremGenerator = new THREE.PMREMGenerator(renderer);
 // scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture;
 //#endregion
 
+// var firstPersonControls = new FirstPersonControls(camera, renderer.domElement);
+// firstPersonControls.movementSpeed = 30;
+// // firstPersonControls.lookSpeed = .05;
+// firstPersonControls.autoForward = true;
+
+
+var flycontrols = new FlyControls(camera, renderer.domElement);
+flycontrols.movementSpeed = 100;
+flycontrols.autoForward = true;
+flycontrols.event;
 //#region Geomentry
 //Add a Primitive Geomentry
 //Floor
@@ -249,7 +258,7 @@ function setupKeyControls() {
 
 const city = new GLTFLoader();
 city.load(
-  "https://threejsfundamentals.org/threejs/resources/models/cartoon_lowpoly_small_city_free_pack/scene.gltf",
+  "models/city/scene.gltf",
   (gltf) => {
     // gltf.scene.position.z = 100;
     // gltf.scene.position.x = 100;
@@ -271,60 +280,62 @@ city.load(
 );
 
 
-// var droneRobot = new GLTFLoader();
-// console.log(droneRobot);
-// droneRobot.load("models/Drone/buster_drone/scene.gltf", function (gltf) {
+var droneRobot = new GLTFLoader();
+console.log(droneRobot);
+droneRobot.load("models/Drone/buster_drone/scene.gltf", function (gltf) {
 
-//   console.log("callback", gltf);
+  console.log("callback", gltf);
 
-//   gltf.scene.position.x = 50;
-//   gltf.scene.position.y = 20;
-//   gltf.scene.position.z = 0;
+  gltf.scene.position.x = 50;
+  gltf.scene.position.y = 20;
+  gltf.scene.position.z = 0;
 
-//   gltf.scene.scale.set(.2, .2, .2);
-//   console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
+  gltf.scene.scale.set(.2, .2, .2);
+  console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
 
-//   scene.add(gltf.scene);
-//   mixer = new THREE.AnimationMixer(gltf.scene);
-//   var firstClip = gltf.animations[0];
-//   gltf.animations.forEach((clip) => {
+  scene.add(gltf.scene);
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  var firstClip = gltf.animations[0];
+  gltf.animations.forEach((clip) => {
 
-//     console.log("DroneAnimationClip: ", clip);
-//     // mixer.clipAction(clip).play();
+    console.log("DroneAnimationClip: ", clip);
+    mixer.clipAction(clip).play();
 
-//   },
-//     function (xhr) {
-//       console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
-//     }, (err) => {
-//       console.log(err);
-//     }
-//   );
+  },
+    function (xhr) {
+      console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+    }, (err) => {
+      console.log(err);
+    }
+  );
+});
 
 
 
 //Add New Smart House
-// var smartHome = new GLTFLoader();
-// smartHome.load('models/House/stylized_house/scene.gltf', (smarthome) => {
+var smartHome = new GLTFLoader();
+smartHome.load('models/House/stylized_house/scene.gltf', (smarthome) => {
 
-//   smarthome.scene.position.x = 500;
-//   smarthome.scene.position.y = 0;
-//   smarthome.scene.position.z = -700;
-//   smarthome.scene.scale.set(20, 20, 20);
-//   console.log("SHScale: ", smarthome.scene.scale);
-//   scene.add(smarthome.scene);
+  smarthome.scene.position.x = 500;
+  smarthome.scene.position.y = 0;
+  smarthome.scene.position.z = -700;
+  smarthome.scene.scale.set(20, 20, 20);
+  console.log("SHScale: ", smarthome.scene.scale);
+  scene.add(smarthome.scene);
 
-//   smarthome.animations; // Array<THREE.AnimationClip>
-//   smarthome.scene; // THREE.Group
-//   smarthome.scenes; // Array<THREE.Group>
-//   smarthome.cameras; // Array<THREE.Camera>
-//   smarthome.asset; // Object
-// },
-//   function (xhr) {
-//     console.log("SmartHome Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
-//   }
-// )
+  smarthome.animations; // Array<THREE.AnimationClip>
+  smarthome.scene; // THREE.Group
+  smarthome.scenes; // Array<THREE.Group>
+  smarthome.cameras; // Array<THREE.Camera>
+  smarthome.asset; // Object
+},
+  function (xhr) {
+    console.log("SmartHome Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+  }
+)
 
 //#endregion
+
 
 //#region  Caching
 THREE.Cache.enabled = true;
@@ -343,7 +354,6 @@ function onWindowResize() {
 
 //#region  Update Method
 function animate() {
-  requestAnimationFrame(animate);
 
   // cone.rotation.x += 0.001;
   // cone.rotation.y += 0.001;
@@ -355,8 +365,17 @@ function animate() {
   controls.update();
   delta = clock.getDelta();
 
+  //Movement
+  // firstPersonControls.update(delta);
+  flycontrols.update(delta);
+  renderer.clear();
+
+  //Animation
   if (mixer) mixer.update(delta);
 
+  // console.log("cameraPosition: ",camera.position);
+
+  requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
 animate();
