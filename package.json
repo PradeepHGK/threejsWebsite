@@ -9,14 +9,6 @@
     "prod": "parcel build src/index.html --out-dir docs --public-url ./",
     "start": "parcel build src/index.html --out-dir docs"
   },
-  "staticFiles": {
-    "staticPath": [
-      {
-        "staticPath": "static",
-        "staticOutDir": "/assets"
-      }
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PradeepHGK/threejsWebsite.git"
