@@ -4,11 +4,6 @@
   "type": "module",
   "description": "gonna build experience",
   "main": "index.js",
-  "scripts": {
-    "dev": "parcel src/index.html",
-    "prod": "parcel build src/index.html --out-dir docs --public-url ./",
-    "start": "parcel build src/index.html --out-dir docs"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PradeepHGK/threejsWebsite.git"
