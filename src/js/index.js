@@ -12,8 +12,8 @@ var mixer; //GLTF Animation Mixer to play
 //#region  Scene
 //Creating New Scene
 const scene = new THREE.Scene();
-// scene.background = new THREE.Color(0xffffff);
 scene.background = new THREE.Color(0xF5DE9A);
+// scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0025 );
 
 // const texture = new THREE.TextureLoader().load( "images/skybox/skybox2.jpg" );
 // texture.wrapS = THREE.RepeatWrapping;
@@ -36,7 +36,7 @@ console.log("CameraPosition: ", camera.position)
 // camera.lookAt(scene.position);
 // camera.maxDistance = 1500;
 // camera.minDistance = 10;
-camera.position.set(-10, 90, 400);
+camera.position.set(-2, 20, 200);
 // camera.rotation.set(100, 0, 0);
 
 //#endregion
@@ -58,16 +58,22 @@ const pmremGenerator = new THREE.PMREMGenerator(renderer);
 // scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture;
 //#endregion
 
-// var firstPersonControls = new FirstPersonControls(camera, renderer.domElement);
-// firstPersonControls.movementSpeed = 30;
-// // firstPersonControls.lookSpeed = .05;
+var firstPersonControls = new FirstPersonControls(camera, renderer.domElement);
+firstPersonControls.movementSpeed = 150;
+firstPersonControls.heightMin = 150;
+firstPersonControls.heightMax = 200;
+firstPersonControls.lookSpeed = 0;
+
+// firstPersonControls.mouseDragOn = false;
+// firstPersonControls.constrainVertical = true;
 // firstPersonControls.autoForward = true;
 
 
-var flycontrols = new FlyControls(camera, renderer.domElement);
-flycontrols.movementSpeed = 100;
-flycontrols.autoForward = true;
-flycontrols.event;
+// var flycontrols = new FlyControls(camera, renderer.domElement);
+// flycontrols.movementSpeed = 100;
+// flycontrols.autoForward = true;
+// flycontrols.event;
+
 //#region Geomentry
 //Add a Primitive Geomentry
 //Floor
@@ -125,27 +131,27 @@ scene.add(dirLight);
 
 //#region OrbitControls
 //Orbit Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 0.5, 0);
-controls.enableDamping = true;
-controls.screenSpacePanning = false;
-controls.minDistance = 80;
-controls.maxDistance = 500;
-controls.maxPolarAngle = Math.PI / 2;
-controls.update();
-controls.touches = {
-  ONE: THREE.TOUCH.ROTATE,
-  TWO: THREE.TOUCH.DOLLY_PAN,
-};
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.target.set(0, 0.5, 0);
+// controls.enableDamping = true;
+// controls.screenSpacePanning = false;
+// controls.minDistance = 80;
+// controls.maxDistance = 500;
+// controls.maxPolarAngle = Math.PI / 2;
+// controls.update();
+// controls.touches = {
+//   ONE: THREE.TOUCH.ROTATE,
+//   TWO: THREE.TOUCH.DOLLY_PAN,
+// };
 
-controls.keys = {
-  LEFT: "ArrowLeft", //left arrow
-  UP: "ArrowUp", // up arrow
-  RIGHT: "ArrowRight", // right arrow
-  BOTTOM: "ArrowDown", // down arrow
-};
+// controls.keys = {
+//   LEFT: "ArrowLeft", //left arrow
+//   UP: "ArrowUp", // up arrow
+//   RIGHT: "ArrowRight", // right arrow
+//   BOTTOM: "ArrowDown", // down arrow
+// };
 
-document.addEventListener("keydown", setupKeyControls, false);
+// document.addEventListener("keydown", setupKeyControls, false);
 function setupKeyControls() {
   document.onkeydown = function (e) {
     switch (e.keyCode) {
@@ -279,36 +285,48 @@ city.load(
   }
 );
 
-
+var robotObject = null;
 var droneRobot = new GLTFLoader();
 console.log(droneRobot);
 droneRobot.load("models/Drone/buster_drone/scene.gltf", function (gltf) {
 
   console.log("callback", gltf);
-
   gltf.scene.position.x = 50;
   gltf.scene.position.y = 20;
   gltf.scene.position.z = 0;
 
-  gltf.scene.scale.set(.2, .2, .2);
+  gltf.scene.scale.set(.05, .05, .05);
   console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
 
+  // gltf.scene.children[0].children[0].children[0].visible = false;
+  console.log(gltf.scene.children[0].children[0].children[0].name);
+
+
   scene.add(gltf.scene);
+  robotObject = gltf;
+  console.log("rootObject: ", robotObject);
   mixer = new THREE.AnimationMixer(gltf.scene);
   var firstClip = gltf.animations[0];
+  // var clipAction = mixer.clipAction(firstClip);
+  // firstClip.tracks.forEach((t)=> t.trim(7, 12));
+  // clipAction.setLoop(THREE.LoopRepeat);
+  // clipAction.play();
   gltf.animations.forEach((clip) => {
 
     console.log("DroneAnimationClip: ", clip);
-    mixer.clipAction(clip).play();
+    // clip.tracks.forEach((tracks) => tracks.trim(7, 10));
+    var action = mixer.clipAction(clip);
+    action.loop = THREE.LoopPingPong;
+    action.play();
+    // action.setloop(THREE.LoopRepeat);
+  });
+},
+  function (xhr) {
+    console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
 
-  },
-    function (xhr) {
-      console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
-    }, (err) => {
-      console.log(err);
-    }
-  );
-});
+  }, (err) => {
+    console.log(err);
+  });
 
 
 
@@ -362,20 +380,25 @@ function animate() {
   // controls.autoRotate = true;
   // controls.enableDamping = true;
   // controls.damping = true;
-  controls.update();
-  delta = clock.getDelta();
+  // controls.update();
 
   //Movement
-  // firstPersonControls.update(delta);
-  flycontrols.update(delta);
-  renderer.clear();
+  // flycontrols.update(delta);
 
   //Animation
+  // renderer.clear();
   if (mixer) mixer.update(delta);
 
   // console.log("cameraPosition: ",camera.position);
-
-  requestAnimationFrame(animate);
+  +
+    requestAnimationFrame(animate);
+  delta = clock.getDelta();
+  if (robotObject !== null) {
+    robotObject.scene.position.set(camera.position.x, camera.position.y, (camera.position.z - 40))
+    // robotObject.scene.position = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z - 100)
+    // console.log(robotObject.scene.position.z, camera.position.z);
+  }
+  firstPersonControls.update(delta);
   renderer.render(scene, camera);
 }
 animate();
