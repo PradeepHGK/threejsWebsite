@@ -131,7 +131,7 @@ scene.add(dirLight);
 
 //#region OrbitControls
 //Orbit Controls
-// const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 // controls.target.set(0, 0.5, 0);
 // controls.enableDamping = true;
 // controls.screenSpacePanning = false;
@@ -288,7 +288,7 @@ city.load(
 var robotObject = null;
 var droneRobot = new GLTFLoader();
 console.log(droneRobot);
-droneRobot.load("models/Drone/buster_drone/scene.gltf", function (gltf) {
+droneRobot.load("https://hmwebassets.s3.amazonaws.com/Wetransfer/bluster_drone/scene.gltf", function (gltf) {
 
   console.log("callback", gltf);
   gltf.scene.position.x = 50;
@@ -332,7 +332,7 @@ droneRobot.load("models/Drone/buster_drone/scene.gltf", function (gltf) {
 
 //Add New Smart House
 var smartHome = new GLTFLoader();
-smartHome.load('models/House/stylized_house/scene.gltf', (smarthome) => {
+smartHome.load('https://hmwebassets.s3.amazonaws.com/Wetransfer/stylized_house/scene.gltf', (smarthome) => {
 
   smarthome.scene.position.x = 500;
   smarthome.scene.position.y = 0;
