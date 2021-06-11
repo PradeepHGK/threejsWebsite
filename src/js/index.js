@@ -3,11 +3,26 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
+import * as CANNON from 'cannon-es'
+// import { BODY_TYPES } from "objects/Body";
 
+let t = 0;
+var isButtonClicked = false;
+const day = new THREE.Color(0xB8F4FF);
+const duskdawn = new THREE.Color(0x00000);
 
 //HTML canvas to Render
 var canvas = document.getElementById("webgl");
 var mixer; //GLTF Animation Mixer to play 
+
+
+//Creating World using cannon
+const world = new CANNON.World({
+  gravity: new CANNON.Vec3(0, -9.82, 0), // m/s²
+})
+
+const timeStep = 1 / 60 // seconds
+let lastCallTime
 
 //#region  Scene
 //Creating New Scene
@@ -33,7 +48,6 @@ var camera = new THREE.PerspectiveCamera(
   2000
 );
 console.log("CameraPosition: ", camera.position)
-// camera.lookAt(scene.position);
 // camera.maxDistance = 1500;
 // camera.minDistance = 10;
 camera.position.set(-2, 20, 200);
@@ -58,21 +72,59 @@ const pmremGenerator = new THREE.PMREMGenerator(renderer);
 // scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture;
 //#endregion
 
-var firstPersonControls = new FirstPersonControls(camera, renderer.domElement);
-firstPersonControls.movementSpeed = 150;
-firstPersonControls.heightMin = 150;
-firstPersonControls.heightMax = 200;
-firstPersonControls.lookSpeed = 0;
+
+
+var Cube = new CANNON.Box(new CANNON.Vec3(100, 20, 100));
+var CubeMat = new CANNON.Material();
+var CubeRigidbody = new CANNON.Body({ isTrigger: true, mass: 20, material: CubeMat, type: CANNON.BODY_TYPES.DYNAMIC, fixedRotation: true, position: new CANNON.Vec3(0, 50, 0) })
+CubeRigidbody.addShape(Cube);
+world.addBody(CubeRigidbody);
+
+
+var Plane = new CANNON.Plane();
+var PlaneMat = new CANNON.Material({friction: 10, restitution: 20});
+var PlaneRigidBody = new CANNON.Body({mass: 0, material: PlaneMat})
+PlaneRigidBody.addShape(Plane);
+world.addBody(PlaneRigidBody)
+
+const Cannongeometry = new THREE.BoxBufferGeometry(100, 100,10)
+const Cannonmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
+var Cannonmesh = new THREE.Mesh(Cannongeometry, Cannonmaterial)
+scene.add(Cannonmesh)
+
+
+// var threePlane = new THREE.Plane(new THREE.Vector3(50, 50, 50));
+// const threeplanematerial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
+// var threeplanemesh = new THREE.Mesh(threePlane, threeplanematerial)
+// scene.add(threeplanemesh)
+
+
+// function SetWorldStep() {
+//   const time = performance.now() / 1000 // seconds
+//   if (!lastCallTime) {
+//     world.step(timeStep)
+//   } else {
+//     const dt = time - lastCallTime
+//     world.step(timeStep, dt)
+//   }
+//   lastCallTime = time
+// }
+
+// var firstPersonControls = new FirstPersonControls(camera, renderer.domElement);
+// firstPersonControls.movementSpeed = 150;
+// firstPersonControls.heightMin = 150;
+// firstPersonControls.heightMax = 200;
+// firstPersonControls.lookSpeed = 0;
 
 // firstPersonControls.mouseDragOn = false;
 // firstPersonControls.constrainVertical = true;
 // firstPersonControls.autoForward = true;
 
 
-// var flycontrols = new FlyControls(camera, renderer.domElement);
-// flycontrols.movementSpeed = 100;
-// flycontrols.autoForward = true;
-// flycontrols.event;
+
+
+
+
 
 //#region Geomentry
 //Add a Primitive Geomentry
@@ -151,33 +203,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 //   BOTTOM: "ArrowDown", // down arrow
 // };
 
-// document.addEventListener("keydown", setupKeyControls, false);
-function setupKeyControls() {
-  document.onkeydown = function (e) {
-    switch (e.keyCode) {
-      case 37: //Left Arrow
-        camera.position.x = camera.position.x - delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.x += 0.1;
-        break;
-      case 38: //Up  //right
-        camera.position.z = camera.position.z - delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.z -= 0.1;
-        break;
-      case 39: //right
-        camera.position.x = camera.position.x + delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.x -= 0.1;
-        break;
-      case 40: //down
-        camera.position.z = camera.position.z + delta;
-        camera.updateProjectionMatrix();
-        // cube.rotation.z += 0.1;
-        break;
-    }
-  };
-}
+
 //#endregion
 
 //#region  Add 3D Objects
@@ -272,6 +298,7 @@ city.load(
     // gltf.scene.position.y = 0;
     // gltf.scene.position.z = 0;
     // gltf.scene.scale.set(5, 5, 5);
+
     scene.add(gltf.scene);
 
     gltf.animations; // Array<THREE.AnimationClip>
@@ -285,23 +312,28 @@ city.load(
   }
 );
 
+
+
+var ParentObject = new THREE.Object3D();
+
 var robotObject = null;
 var droneRobot = new GLTFLoader();
 console.log(droneRobot);
 droneRobot.load("https://hmwebassets.s3.amazonaws.com/Wetransfer/bluster_drone/scene.gltf", function (gltf) {
-
+  
+ParentObject.attach(gltf.scene);
   console.log("callback", gltf);
-  gltf.scene.position.x = 50;
-  gltf.scene.position.y = 20;
-  gltf.scene.position.z = 0;
-
-  gltf.scene.scale.set(.05, .05, .05);
+  // gltf.scene.position.x = 0;
+  // gltf.scene.position.y = 10;
+  // gltf.scene.position.z = 0;
+  
+  gltf.scene.scale.set(.02, .02, .02);
   console.log("dronePosition: ", gltf.scene.position, gltf.scene.scale, gltf.asset);
-
+  
   // gltf.scene.children[0].children[0].children[0].visible = false;
   console.log(gltf.scene.children[0].children[0].children[0].name);
-
-
+  
+  
   scene.add(gltf.scene);
   robotObject = gltf;
   console.log("rootObject: ", robotObject);
@@ -312,7 +344,7 @@ droneRobot.load("https://hmwebassets.s3.amazonaws.com/Wetransfer/bluster_drone/s
   // clipAction.setLoop(THREE.LoopRepeat);
   // clipAction.play();
   gltf.animations.forEach((clip) => {
-
+    
     console.log("DroneAnimationClip: ", clip);
     // clip.tracks.forEach((tracks) => tracks.trim(7, 10));
     var action = mixer.clipAction(clip);
@@ -321,12 +353,16 @@ droneRobot.load("https://hmwebassets.s3.amazonaws.com/Wetransfer/bluster_drone/s
     // action.setloop(THREE.LoopRepeat);
   });
 },
-  function (xhr) {
-    console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+function (xhr) {
+  console.log("DroneRobot_Loading: ", (xhr.loaded / xhr.total) * 100 + "% loaded");
+  ParentObject.position.x = 0
+  ParentObject.position.y = 15;
+  ParentObject.position.z = 0;
 
-  }, (err) => {
-    console.log(err);
-  });
+}, (err) => {
+  console.log(err);
+});
+
 
 
 
@@ -355,9 +391,15 @@ smartHome.load('https://hmwebassets.s3.amazonaws.com/Wetransfer/stylized_house/s
 //#endregion
 
 
+var flycontrols = new FlyControls(camera, renderer.domElement);
+flycontrols.movementSpeed = 120;
+flycontrols.rollSpeed = 0.1;
+flycontrols.dragToLook = true;
+
 //#region  Caching
 THREE.Cache.enabled = true;
 //#endregion
+
 
 //#region Resize Window
 //Make the window responsive and update on the resizing
@@ -370,9 +412,14 @@ function onWindowResize() {
 }
 //#endregion
 
+
+// document.getElementById("changecolor").addEventListener("click", ChangeColors);
+// function ChangeColors(params) {
+//   isButtonClicked = true;
+// }
+
 //#region  Update Method
 function animate() {
-
   // cone.rotation.x += 0.001;
   // cone.rotation.y += 0.001;
   // cone.rotation.z += 0.001;
@@ -383,26 +430,51 @@ function animate() {
   // controls.update();
 
   //Movement
-  // flycontrols.update(delta);
 
   //Animation
   // renderer.clear();
   if (mixer) mixer.update(delta);
-
   // console.log("cameraPosition: ",camera.position);
-  +
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
+
+  // SetWorldStep();  
+
+  const time = performance.now() / 1000 // seconds
+  if (!lastCallTime) {
+    world.step(timeStep)
+  } else {
+    const dt = time - lastCallTime
+    world.step(timeStep, dt)
+  }
+  lastCallTime = time
+
+
+  Cannonmesh.position.copy(CubeRigidbody.position)
+  Cannonmesh.quaternion.copy(CubeRigidbody.quaternion)
+
+  if (true) {
+    t += 0.01;
+    var timeDelay = Math.sin(t);
+    // console.log("time: ", time);
+    scene.background.copy(day).lerp(duskdawn, 0.6 * (timeDelay + .2));
+  }
+
+
   delta = clock.getDelta();
   if (robotObject !== null) {
-    robotObject.scene.position.set(camera.position.x, camera.position.y, (camera.position.z - 40))
-    // robotObject.scene.position = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z - 100)
-    // console.log(robotObject.scene.position.z, camera.position.z);
+    // robotObject.scene.position.set(camera.position.x, camera.position.y, (camera.position.z - 40))
+    // robotObject.scene.rotation.x = camera.rotation.x; //(, camera.rotation.y, camera.rotation.z);
+    // robotObject.scene.rotation.y = camera.rotation.y;
+    // robotObject.scene.rotation.z = camera.rotation.z;
   }
-  firstPersonControls.update(delta);
+  flycontrols.update(delta);
+  // firstPersonControls.update(delta);
   renderer.render(scene, camera);
 }
+
 animate();
 //#endregion
+
 
 //#region  Prevent Code to copy
 //Disable Right click to prevent to get source code
@@ -416,3 +488,37 @@ function disableRightClick() {
 
 document.body.onload = disableRightClick();
 //#endregion
+
+
+
+
+// document.addEventListener("keydown", setupKeyControls, false);
+var cameraMoveSpeed = 6;
+function setupKeyControls() {
+  document.onkeydown = function (e) {
+    switch (e.keyCode) {
+      case 37: //Left Arrow
+        robotObject.po
+        // camera.position.x += camera.position.x * delta * cameraMoveSpeed;
+        camera.updateProjectionMatrix();
+        // cube.rotation.x += 0.1;
+        console.log("LEFtARROW")
+        break;
+      case 38: //Up  //right
+        // camera.position.z -= camera.position.z * delta * cameraMoveSpeed;
+        camera.updateProjectionMatrix();
+        // cube.rotation.z -= 0.1;
+        break;
+      case 39: //right
+        // camera.position.x -= camera.position.x * delta * cameraMoveSpeed;
+        camera.updateProjectionMatrix();
+        // cube.rotation.x -= 0.1;
+        break;
+      case 40: //down
+        // camera.position.z += camera.position.z * delta * cameraMoveSpeed;
+        camera.updateProjectionMatrix();
+        // cube.rotation.z += 0.1;
+        break;
+    }
+  };
+}
